@@ -31,7 +31,7 @@ def embedding_content(content, source_title):
     response_embedding = get_embedding(text)
     embedding_vector = response_embedding.data[0].embedding
     token = response_embedding.usage.total_tokens
-    return [embedding_vector, token]
+    return embedding_vector, token
 
 def embedding_header(content, source_name, source_title):
     header = transform.getHeader(source_name, source_title, content)
@@ -50,7 +50,7 @@ def create_embeddings(source_id, header=False):
             break
         [content, id, source_title, source_name] = data
 
-        [embedding_vector, token] = embedding_content(content, source_title)
+        embedding_vector, token = embedding_content(content, source_title)
 
         header_embedding_vector = None
         if header:
