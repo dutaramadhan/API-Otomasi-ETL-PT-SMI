@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import requests
 import time
 import model
-import transform
+from controller import transform
 import threading
 
 load_dotenv()
@@ -24,13 +24,13 @@ def get_embedding(text):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    return response
+    return response.json()
 
 def embedding_content(content, source_title):
     text = source_title + '\n' + content
     response_embedding = get_embedding(text)
-    embedding_vector = response_embedding.data[0].embedding
-    token = response_embedding.usage.total_tokens
+    embedding_vector = response_embedding['data'][0]['embedding']
+    token = response_embedding['usage']['total_tokens']
     return embedding_vector, token
 
 def embedding_header(content, source_name, source_title):
@@ -39,7 +39,7 @@ def embedding_header(content, source_name, source_title):
         header_embedding_vector = None
     else:
         header_embedding = get_embedding(header)
-        header_embedding_vector = header_embedding.data[0].embedding
+        header_embedding_vector = header_embedding['data'][0]['embedding']
     return header_embedding_vector
 
 def create_embeddings(source_id, header=False):
@@ -48,7 +48,7 @@ def create_embeddings(source_id, header=False):
         if not data:
             print("completed")
             break
-        [content, id, source_title, source_name] = data
+        [content, source_title, source_name, id] = data
 
         embedding_vector, token = embedding_content(content, source_title)
 

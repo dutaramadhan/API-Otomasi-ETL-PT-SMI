@@ -64,20 +64,20 @@ def selectOne(source_id):
 
   # Execute a SELECT query to fetch one row
   query = "SELECT content, source_title, source_name, data.id FROM data INNER JOIN source_metadata ON data.source_id = source_metadata.id WHERE embedding is NULL AND source_id=%s LIMIT 1"
-  cursor.execute(query, (source_id))
+  cursor.execute(query, (source_id, ))
 
   # Fetch the first row from the result set
-  [content, source_title, source_name, id] = cursor.fetchone()
+  data = cursor.fetchone()
   #content = source_title + '\n' + content
   
   cursor.close()
   conn.close()
-  return [content, id, source_title, source_name]
+  return data
 
 def storeEmbedding(id, embedding, token, header_embedding):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
-  update_query = "UPDATE data SET embedding = %s, header_embedding = %s total_tokens = %s WHERE id = %s;"
+  update_query = "UPDATE data SET embedding = %s, header_embedding = %s, total_tokens = %s WHERE id = %s;"
 
   # Execute the update query
   cursor.execute(update_query, (embedding, header_embedding, token, id))
