@@ -56,6 +56,9 @@ def post_source():
         source_id = model.insertSourceMetadata(extracted_source['pdf_filename'], extracted_source['pdf_filename'], source_title)
         for index, content in enumerate(transformed_source):
             model.insertChunkData(source_id, content)
+
+        
+        return(jsonify({'message': "Successfully Load File and its Embedding to Database"}))
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
