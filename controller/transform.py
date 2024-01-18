@@ -1,5 +1,5 @@
 import re
-import extract
+from controller import extract
 from langchain.text_splitter import NLTKTextSplitter
 import nltk
 
@@ -63,9 +63,7 @@ def textSplit(textpdf):
 
   return [item for item in chunks if item]
 
-def transform(filepath, unnecessary_patterns, title_patterns):
-  textpdf = extract.extractPDF(filepath)
-
+def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns):
   # Delete unnecessary pattern
   result = cleanText(unnecessary_patterns, textpdf)
 
@@ -75,14 +73,13 @@ def transform(filepath, unnecessary_patterns, title_patterns):
   # Find Title
   title = findTitle(title_patterns, chunks[0])
   if title == '':
-    title = re.split('/', filepath)[-1]
-    title = re.sub('.pdf|.PDF', '', title)
+    title = re.sub('.pdf|.PDF', '', filename)
 
   return title, chunks
 
-def transformNonPasal(filepath, unnecessary_patterns, title_patterns):
+def transform_non_pasal(textpdf, filename, unnecessary_patterns, title_patterns):
   # Extract 
-  chunks = extract.extractPDFPerPage(filepath)
+  chunks = extract.extractPDFPerPage(textpdf)
 
   # Delete unnecessary pattern
   for i in range(len(chunks)):
@@ -91,8 +88,7 @@ def transformNonPasal(filepath, unnecessary_patterns, title_patterns):
   # Find Title
   title = findTitle(title_patterns, chunks[0])
   if title == '':
-    title = re.split('/', filepath)[-1]
-    title = re.sub('.pdf|.PDF', '', title)
+    title = re.sub('.pdf|.PDF', '', filename)
 
   return title, [item for item in chunks if item]
 

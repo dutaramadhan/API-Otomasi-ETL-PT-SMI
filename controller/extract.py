@@ -1,7 +1,7 @@
 import PyPDF2
 
-def extractPDF(filepath):
-  pdf_reader = PyPDF2.PdfReader(filepath)
+def extractPDF(file):
+  pdf_reader = PyPDF2.PdfReader(file)
 
   textpdf = ''
 
