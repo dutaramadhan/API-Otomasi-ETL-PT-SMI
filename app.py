@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
 import json
-from controller import extract, transform
+from controller import extract, transform, embedding
 import model
 
 app = Flask(__name__)
@@ -56,7 +56,9 @@ def post_source():
         source_id = model.insertSourceMetadata(extracted_source['pdf_filename'], extracted_source['pdf_filename'], source_title)
         for index, content in enumerate(transformed_source):
             model.insertChunkData(source_id, content)
-
+        
+        header = extracted_source['config_data']['split_mode'] == 'pasal'
+        embedding.threaded_create_embeddings(source_id, header=header)
         
         return(jsonify({'message': "Successfully Load File and its Embedding to Database"}))
     except Exception as e:
