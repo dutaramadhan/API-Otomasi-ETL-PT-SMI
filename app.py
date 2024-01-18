@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-import os
 import json
 from controller import extract, transform, embedding
 import model

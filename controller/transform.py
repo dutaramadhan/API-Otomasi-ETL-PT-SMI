@@ -1,7 +1,6 @@
 import re
 from controller import extract
 from langchain.text_splitter import NLTKTextSplitter
-import nltk
 
 def splitTextBy(pattern, text, context=""):
   result = re.split(pattern, text)
