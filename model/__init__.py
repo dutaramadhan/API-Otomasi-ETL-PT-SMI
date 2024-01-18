@@ -47,9 +47,9 @@ def insertChunkData(source_id, chunk):
   query = query.format(table_name, col_name)
   try:
     cur.execute(query, (source_id, chunk))
-    source_id = cur.fetchone()[0]
+    id = cur.fetchone()[0]
     conn.commit()
-    return source_id 
+    return id 
   except Exception as e:
     print(f"Error inserting data: {e}")
     conn.rollback()
@@ -58,30 +58,29 @@ def insertChunkData(source_id, chunk):
     cur.close()
     conn.close()
 
-def selectOne():
+def selectOne(source_id):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
 
   # Execute a SELECT query to fetch one row
-  query = "SELECT content, source_title, source_name, data.id FROM data INNER JOIN source_metadata ON data.source_id = source_metadata.id WHERE header_embedding is NULL AND is_header_embedded = FALSE LIMIT 1"
-  cursor.execute(query)
+  query = "SELECT content, source_title, source_name, data.id FROM data INNER JOIN source_metadata ON data.source_id = source_metadata.id WHERE embedding is NULL AND source_id=%s LIMIT 1"
+  cursor.execute(query, (source_id))
 
   # Fetch the first row from the result set
   [content, source_title, source_name, id] = cursor.fetchone()
-  content = source_title + '\n' + content
+  #content = source_title + '\n' + content
   
-
   cursor.close()
   conn.close()
   return [content, id, source_title, source_name]
 
-def storeEmbedding(id, embedding):
+def storeEmbedding(id, embedding, token, header_embedding):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
-  update_query = "UPDATE data SET header_embedding = %s, is_header_embedded = TRUE WHERE id = %s;"
+  update_query = "UPDATE data SET embedding = %s, header_embedding = %s total_tokens = %s WHERE id = %s;"
 
   # Execute the update query
-  cursor.execute(update_query, (embedding, id))
+  cursor.execute(update_query, (embedding, header_embedding, token, id))
 
   # Commit the changes
   conn.commit()
