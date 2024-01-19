@@ -63,6 +63,35 @@ def post_source():
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
-
+    
+@app.route('/smi/source', methods=['GET'])
+def get_source_metadata():
+    try:
+        source_metadata = model.getSourceMetadata()
+        response = []
+        for metadata in source_metadata:
+            entry = {
+                "id" : metadata[4], 
+                "source_uri" : metadata[0],
+                "source_name" : metadata[1],
+                "source_title" : metadata[2],
+                "created_at" : metadata[3],
+            }
+            response.append(entry)
+        return jsonify(response)      
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
+    
+@app.route("/smi/source", methods=['DELETE'])
+def delete_source():
+    try:
+        id = request.args.get('id')
+        model.deleteSourceData(id)
+        return jsonify({"success": "Sucessfully deleted the data"})
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
+    
 if __name__ == '__main__':
     app.run(debug=True)
