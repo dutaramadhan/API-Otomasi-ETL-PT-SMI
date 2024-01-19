@@ -49,8 +49,7 @@ def transform_files(data):
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
-        extracted_source =  extract_files(request.files)
-        extracted_source = extracted_source.get_json()
+        extracted_source =  extract_files(request.files).get_json()
         source_title, transformed_source = transform_files(extracted_source)
         source_id = model.insertSourceMetadata(extracted_source['pdf_filename'], extracted_source['pdf_filename'], source_title)
         for index, content in enumerate(transformed_source):
