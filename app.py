@@ -59,9 +59,9 @@ def post_source():
             extracted_source = extract_files(pdf_file, config_data)
             source_title, transformed_source = transform_files(extracted_source)
             print(pdf_file, source_title, source_uri)
-
+            print('transform \n', transformed_source)
             source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
-    
+            print('source id : ', source_id)
             for index, content in enumerate(transformed_source):
                 model.insertChunkData(source_id, content)
     
@@ -70,7 +70,7 @@ def post_source():
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:
-        error_message = {'error': str(e), extracted_source: extracted_source, transformed_source:transformed_source}
+        error_message = {'error': str(e)}
         return jsonify(error_message), 400
 
     
@@ -124,4 +124,4 @@ def serve_files(path):
     
 
 if __name__ == '__main__':
-    app.run(debug=False, port=os.getenv('APP_PORT'))
+    app.run(debug=True, port=os.getenv('APP_PORT'))
