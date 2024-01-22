@@ -9,12 +9,15 @@ app = Flask(__name__)
 load_dotenv()
 
 def upload_file(file):
-    pdf_file = file
-    if pdf_file:
-        # Save the file to the specified folder
-        pdf_file.save(os.path.join('files', pdf_file.filename))
-        return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
-
+    try:
+        pdf_file = file
+        if pdf_file:
+            # Save the file to the specified folder
+            pdf_file.save(os.path.join('files', pdf_file.filename))
+            return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
 def extract_files(files):
     try:
         # Check if the POST request has both the JSON and PDF file parts
@@ -33,13 +36,11 @@ def extract_files(files):
         else:
             pdf_content = extract.extractPDFPerPage(pdf_file)
 
-        # Perform processing with the JSON and PDF data
         result = {'config_data': config_data, 'pdf_filename': pdf_filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
 
         return jsonify(result)
 
     except Exception as e:
-        # Handle any potential errors
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
     
@@ -107,7 +108,7 @@ def root_dir():
 def get_file(filename):
     try:
         src = os.path.join(root_dir(), filename)
-        return open(src, 'rb').read()  # Open in binary mode for files
+        return open(src, 'rb').read()
     except IOError as exc:
         return str(exc)
 
