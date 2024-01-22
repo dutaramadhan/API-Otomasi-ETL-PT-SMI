@@ -59,7 +59,7 @@ def post_source():
             extracted_source = extract_files(pdf_file, config_data)
             source_title, transformed_source = transform_files(extracted_source)
             print(pdf_file, source_title, source_uri)
-            """
+
             source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
     
             for index, content in enumerate(transformed_source):
@@ -67,7 +67,7 @@ def post_source():
     
             header = extracted_source['config_data']['split_mode'] == 'pasal'
             embedding.threaded_create_embeddings(source_id, header=header)
-            """
+
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:
         error_message = {'error': str(e)}
