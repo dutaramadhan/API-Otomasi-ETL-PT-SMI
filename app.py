@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from dotenv import load_dotenv
 import os
 import json
@@ -64,6 +64,22 @@ def post_source():
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
+
+def root_dir(): 
+    return os.path.abspath(os.path.dirname(__file__))
+def get_file(filename):
+    try:
+        src = os.path.join(root_dir(), filename)
+        return open(src).read()
+    except IOError as exc:
+        return str(exc)
+
+@app.route('files/<path:path>')
+def serve_files(path):
+    complete_path = os.path.join(root_dir(), path)
+    #ext = os.path.splitext(path)[1]
+    content = get_file(complete_path)
+    return Response(content, mimetype='application/pdf')
 
 if __name__ == '__main__':
     app.run(debug=True)
