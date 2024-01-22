@@ -1,11 +1,19 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, send_file
 from dotenv import load_dotenv
 import json
 from controller import extract, transform, embedding
 import model
+import os
 
 app = Flask(__name__)
 load_dotenv()
+
+def upload_file(file):
+    pdf_file = file
+    if pdf_file:
+        # Save the file to the specified folder
+        pdf_file.save(os.path.join('files', pdf_file.filename))
+        return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
 
 def extract_files(files):
     try:
@@ -49,9 +57,10 @@ def transform_files(data):
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
+        source_uri = upload_file(request.files['pdf_file'])
         extracted_source =  extract_files(request.files).get_json()
         source_title, transformed_source = transform_files(extracted_source)
-        source_id = model.insertSourceMetadata(extracted_source['pdf_filename'], extracted_source['pdf_filename'], source_title)
+        source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
         for index, content in enumerate(transformed_source):
             model.insertChunkData(source_id, content)
         
@@ -92,22 +101,25 @@ def delete_source():
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
     
-
-def root_dir(): 
+def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
+
 def get_file(filename):
     try:
         src = os.path.join(root_dir(), filename)
-        return open(src).read()
+        return open(src, 'rb').read()  # Open in binary mode for files
     except IOError as exc:
         return str(exc)
 
-@app.route('files/<path:path>')
+@app.route('/files/<path:path>')
 def serve_files(path):
-    complete_path = os.path.join(root_dir(), path)
-    #ext = os.path.splitext(path)[1]
-    content = get_file(complete_path)
-    return Response(content, mimetype='application/pdf')
+    complete_path = os.path.join(root_dir(), 'files', path)
+    
+    try:
+        return send_file(complete_path, mimetype='application/pdf')
+    except Exception as e:
+        return str(e)
+    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, port=os.getenv('APP_PORT'))
