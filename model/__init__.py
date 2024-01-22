@@ -87,3 +87,33 @@ def storeEmbedding(id, embedding, token, header_embedding):
   cursor.close()
   conn.close()
 
+def getSourceMetadata():
+  conn = psycopg2.connect(**db_params)
+  cursor = conn.cursor()
+
+  query = "SELECT * FROM source_metadata"
+  cursor.execute(query)
+
+  data = cursor.fetchall()
+  
+  cursor.close()
+  conn.close()
+  return data
+
+def deleteSourceData(id):
+  conn = psycopg2.connect(**db_params)
+  cursor = conn.cursor()
+  delete_query = """
+  BEGIN;
+  DELETE FROM data WHERE source_id = %s;
+  DELETE FROM source_metadata WHERE id = %s;
+  COMMIT;
+  """
+
+  # Execute the update query
+  cursor.execute(delete_query, (id,id))
+
+  # Commit the changes
+  conn.commit()
+  cursor.close()
+  conn.close()

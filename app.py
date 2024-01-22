@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, Response
 from dotenv import load_dotenv
-import os
 import json
 from controller import extract, transform, embedding
 import model
@@ -50,8 +49,7 @@ def transform_files(data):
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
-        extracted_source =  extract_files(request.files)
-        extracted_source = extracted_source.get_json()
+        extracted_source =  extract_files(request.files).get_json()
         source_title, transformed_source = transform_files(extracted_source)
         source_id = model.insertSourceMetadata(extracted_source['pdf_filename'], extracted_source['pdf_filename'], source_title)
         for index, content in enumerate(transformed_source):
@@ -64,6 +62,36 @@ def post_source():
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
+    
+@app.route('/smi/source', methods=['GET'])
+def get_source_metadata():
+    try:
+        source_metadata = model.getSourceMetadata()
+        response = []
+        for metadata in source_metadata:
+            entry = {
+                "id" : metadata[4], 
+                "source_uri" : metadata[0],
+                "source_name" : metadata[1],
+                "source_title" : metadata[2],
+                "created_at" : metadata[3],
+            }
+            response.append(entry)
+        return jsonify(response)      
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
+    
+@app.route("/smi/source", methods=['DELETE'])
+def delete_source():
+    try:
+        id = request.args.get('id')
+        model.deleteSourceData(id)
+        return jsonify({"success": "Sucessfully deleted the data"})
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
+    
 
 def root_dir(): 
     return os.path.abspath(os.path.dirname(__file__))
