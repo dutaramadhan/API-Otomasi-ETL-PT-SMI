@@ -17,11 +17,8 @@ def upload_file(pdf_file):
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
-def extract_files(pdf_file, config_file):
+def extract_files(pdf_file, config_data):
     try:
-        # Access the JSON file
-        config_data = json.load(config_file)
-
         # Access the PDF file
         pdf_filename = pdf_file.filename
         if config_data['split_mode'] == "pasal":
@@ -53,12 +50,15 @@ def post_source():
     try:
         if 'pdf_file' not in request.files:
             return jsonify({'error': 'No PDF file part'})
+        
+        # Access the JSON file
+        config_data = json.load(request.files['config'])
 
         for pdf_file in request.files.getlist('pdf_file'):
             source_uri = upload_file(pdf_file)
-            extracted_source = extract_files(pdf_file, request.files['config'])
+            extracted_source = extract_files(pdf_file, config_data)
             source_title, transformed_source = transform_files(extracted_source)
-            print(pdf_file, source_title, source_uri, extracted_source)
+            print(pdf_file, source_title, source_uri)
             """
             source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
     
