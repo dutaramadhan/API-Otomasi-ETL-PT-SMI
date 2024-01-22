@@ -70,7 +70,7 @@ def post_source():
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:
-        error_message = {'error': str(e)}
+        error_message = {'error': str(e), extracted_source: extracted_source, transformed_source:transformed_source}
         return jsonify(error_message), 400
 
     
