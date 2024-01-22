@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response, send_file
+from flask import Flask, request, jsonify, Response, send_file, abort
 from dotenv import load_dotenv
 import json
 from controller import extract, transform, embedding
@@ -15,8 +15,8 @@ def upload_file(pdf_file):
             pdf_file.save(os.path.join('files', pdf_file.filename))
             return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
     except Exception as e:
-        error_message = {'error': str(e)}
-        return jsonify(error_message), 400
+        abort(400, str(e))
+
 def extract_files(pdf_file, config_data):
     try:
         # Access the PDF file
@@ -31,8 +31,7 @@ def extract_files(pdf_file, config_data):
         return result
 
     except Exception as e:
-        error_message = {'error': str(e)}
-        return jsonify(error_message), 400
+        abort(400, str(e))
     
 def transform_files(data):
     try:
@@ -42,8 +41,7 @@ def transform_files(data):
             result = transform.transform_non_pasal(data['pdf_content'], data['pdf_filename'], data['config_data']['unnecessary_patterns'], data['config_data']['title_patterns'])
         return result
     except Exception as e:
-        error_message = {'error': str(e)}
-        return jsonify(error_message), 400
+        abort(400, str(e))
 
 @app.route('/smi/source', methods=['POST'])
 def post_source():
@@ -59,9 +57,9 @@ def post_source():
             extracted_source = extract_files(pdf_file, config_data)
             source_title, transformed_source = transform_files(extracted_source)
             print(pdf_file, source_title, source_uri)
-            print('transform \n', transformed_source)
+
             source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
-            print('source id : ', source_id)
+
             for index, content in enumerate(transformed_source):
                 model.insertChunkData(source_id, content)
     
@@ -124,4 +122,4 @@ def serve_files(path):
     
 
 if __name__ == '__main__':
-    app.run(debug=True, port=os.getenv('APP_PORT'))
+    app.run(debug=False, port=os.getenv('APP_PORT'))
