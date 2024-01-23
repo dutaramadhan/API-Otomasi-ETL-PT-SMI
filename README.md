@@ -123,10 +123,23 @@
   ```
   id: int
   ```
-  
 - ##### Response
   ```
   {"success": "Sucessfully deleted the data and file"}
   ```
+### 4. Serve File
+- #### Route
+  ```
+  GET /files/<path>
+  ```
+- #### Parameters
+  ```
+  path: filename
+  ```
+- #### Response
+  PDF file
+
+## Related Repository
+- <a href='https://github.com/dutaramadhan/API-Query-Data-PT-SMI'>API-Query-Data-PT-SMI</a>
 
 
