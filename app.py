@@ -4,9 +4,13 @@ import json
 from controller import extract, transform, embedding
 import model
 import os
+import logging
 
 app = Flask(__name__)
 load_dotenv()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def upload_file(pdf_file):
     try:
@@ -17,11 +21,22 @@ def upload_file(pdf_file):
     except Exception as e:
         abort(400, str(e))
 
+def delete_file(filename):
+    try:
+        file_path = os.path.join('files', filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logger.info(f"File '{filename}' deleted successfully.")
+        else:
+            logger.warning(f"File '{filename}' not found.")
+    except Exception as e:
+        abort(400, str(e))
+
 def extract_files(pdf_file, config_data):
     try:
         # Access the PDF file
         pdf_filename = pdf_file.filename
-        if config_data['split_mode'] == "pasal":
+        if config_data['split_mode'] == "pasal": 
             pdf_content = extract.extractPDF(pdf_file)
         else:
             pdf_content = extract.extractPDFPerPage(pdf_file)
@@ -95,8 +110,9 @@ def get_source_metadata():
 def delete_source():
     try:
         id = request.args.get('id')
-        model.deleteSourceData(id)
-        return jsonify({"success": "Sucessfully deleted the data"})
+        source_name = model.deleteSourceData(id)
+        delete_file(source_name)
+        return jsonify({"success": "Sucessfully deleted the data and file"})
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
