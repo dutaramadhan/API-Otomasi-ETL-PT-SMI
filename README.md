@@ -2,6 +2,54 @@
 
 ## Information About this API
 
+<a name="tech-stack"></a>
+## Tech Stack
+### 1. Python
+### 2. Flask
+### 3. OpenAI
+### 4. Postgresql
+### 5. pgvector
+### 6. Docker
+
+<a name="set-up"></a>
+## How to Set Up
+<a name="postgres"></a>
+### 1. Postgresql
+Skema database
+```
+CREATE DATABASE IF NOT EXISTS your_database_name;
+```
+```
+CREATE TABLE IF NOT EXISTS public.source_metadata
+(
+    source_uri character varying,
+    source_name character varying,
+    source_title character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    id SERIAL NOT NULL,
+    CONSTRAINT source_metadata_pkey PRIMARY KEY (id)
+)
+```
+```
+CREATE TABLE IF NOT EXISTS public.data
+(
+    content text,
+    total_tokens integer,
+    source_id integer,
+    id SERIAL NOT NULL,
+    embedding vector(1536),
+    header_embedding vector(1536),
+    CONSTRAINT data_pkey PRIMARY KEY (id),
+    CONSTRAINT source FOREIGN KEY (source_id)
+        REFERENCES public.source_metadata (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+```
+<a name="pgvector"></a>
+### 2. pgvector
+Untuk lebih detailnya bisa dilihat pada <a href='https://github.com/pgvector/pgvector'>repositori github pgvector</a>
+
 ## How to Run Locally
 1. Clone repositori ini
    ```
