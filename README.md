@@ -2,6 +2,16 @@
 
 ## Information About this API
 
+## Main Features
+### 1. Extract
+### 2. Transform
+### 3. Load
+### 4. Embedding
+### 5. Upload File
+### 6. Delete File and Data
+### 7. Serve File
+### 8. Get Metadata
+
 <a name="tech-stack"></a>
 ## Tech Stack
 ### 1. Python
