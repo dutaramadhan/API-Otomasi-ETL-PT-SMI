@@ -25,3 +25,28 @@
     ```
     http://<ip-host>:5001/
     ```
+
+## API Endpoint
+### 1. Post source file
+- ##### Route
+  ```
+  POST /smi/source
+  ```
+- ##### Request Body
+   | KEY           | VALUE         | DESCRIPTION |
+   | ------------- |:-------------:|--|
+   | pdf_file      | file.pdf      | sources files |
+   | config        | config.json   | configuration of sources  |
+  
+  config.json
+  ```
+  {
+     "split_mode": "pasal" OR "page",
+     "unnecessary_patterns" : [ regex ],
+     "title_patterns": [ regex ]
+  }
+  ```
+- ##### Response
+  ```
+  { "message": "Successfully Load File and its Embedding to Database" }
+  ```
