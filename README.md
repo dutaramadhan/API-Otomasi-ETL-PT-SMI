@@ -96,3 +96,37 @@
   ```
   { "message": "Successfully Load File and its Embedding to Database" }
   ```
+
+### 2. Get Source Metadata
+- ##### Route
+  ```
+  GET /smi/source
+  ```
+- ##### Response
+  ```
+  [
+    {
+        "created_at": timestamp,
+        "id": int,
+        "source_name": string,
+        "source_title": string,
+        "source_uri": string
+    },
+  ]
+  ```
+### 3. Delete Source Data
+- ##### Route
+  ```
+  DELETE /smi/source
+  ```
+- ##### Parameters
+  ```
+  id: int
+  ```
+  
+- ##### Response
+  ```
+  {"success": "Sucessfully deleted the data and file"}
+  ```
+
+
