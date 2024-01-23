@@ -136,6 +136,9 @@ def serve_files(path):
     except Exception as e:
         return str(e)
     
+@app.route('/')
+def info():
+    return 'Server is Running on port ' + os.getenv('APP_PORT') 
 
 if __name__ == '__main__':
     app.run(debug=False, port=os.getenv('APP_PORT'))
