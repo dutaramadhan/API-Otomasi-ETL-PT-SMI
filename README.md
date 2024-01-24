@@ -11,7 +11,9 @@ Fitur untuk proses pembersihan dan transformasi untuk data yang sudah diekstraks
 ### 3. Load
 Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan ke database dalam bentuk vektor. 
 ### 4. Embedding
-Fitur untuk proses embedding setiap data yang baru dimuat menggunakan model text-embedding-ada-002 dari OpenAI. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Vektor merupakan representasi numeris yang optimal untuk search dan retrieve data. Jarak antara 2 vektor dapat mengukur hubungan konsep antar keduanya.
+Fitur untuk proses embedding setiap data yang baru dimuat menggunakan model text-embedding-ada-002 dari OpenAI. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Vektor merupakan representasi numeris yang optimal untuk search dan retrieve data. Jarak antara 2 vektor dapat mengukur hubungan konsep antar keduanya. Terdapat 2 data embedding yaitu 
+- data content : gabungan judul sumber dan konten
+- data header : gabungan judul sumber, nama file sumber dan pasal (hanya untuk split mode pasal)
 ### 5. Upload File
 Fitur yang memungkinkan pengguna untuk mengunggah file PDF ke sistem. Setelah berhasil diunggah, file tersebut akan siap untuk menjalani proses ekstraksi, transformasi, embedding, dan penyimpanan ke dalam database.
 ### 6. Delete File and Data
@@ -20,6 +22,15 @@ Fitur yang memungkinkan pengguna untuk menghapus file beserta data terkait dari 
 Fitur yang memungkinkan pengguna untuk mengakses file yang telah diunggah dengan memasukan url yang terkait dengan file tersebut.
 ### 8. Get Metadata
 Fitur yang memberikan informasi metadata terkait file yang telah diunggah, seperti id file, nama file, judul file, tanggal unggah, dan url tempat file disimpan. Metadata ini dapat memberikan gambaran singkat kepada pengguna mengenai file yang telah berhasil diunggah ke dalam sistem.
+
+## System Flow
+Berikut adalah alur proses ETL dan penanaman data.
+![Alur ETL dan Embedding](https://drive.google.com/uc?id=1m0AnbubnMsr-_8Qd88fsc0mvMIEzTQy7)
+1. File PDF diekstrak menjadi teks
+2. Teks dilakukan transformasi untuk dipecah menjadi potongan-potongan kecil dan dilakukan pembersihan data. Terdapat 2 mode pemecahan : per page atau per pasal.
+3. Setiap potongan data dimuat ke basis data
+4. Setiap potongan data dilakukan proses embedding menggunakan model OpenAI.
+5. Hasil embedding berupa vector dimuat kembali ke basis data
 
 <a name="tech-stack"></a>
 ## Tech Stack
