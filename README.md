@@ -5,13 +5,13 @@ API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding s
  
 ## Main Features
 ### 1. Extract
-fitur untuk proses ektraksi file PDF menjadi sebuah teks. Untuk file yang memiliki split mode pasal, file akan diekstraksi menjadi satu teks utuh. Untuk file yang memiliki split mode non pasal, file akan diekstraksi per halaman dan menghasilkan output berupa list teks. 
+Fitur untuk proses ektraksi file PDF menjadi sebuah teks. Untuk file yang memiliki split mode pasal, file akan diekstraksi menjadi satu teks utuh. Untuk file yang memiliki split mode non pasal, file akan diekstraksi per halaman dan menghasilkan output berupa list teks. 
 ### 2. Transform
 Fitur untuk proses pembersihan dan transformasi untuk data yang sudah diekstraksi. Data akan dibersihkan dari pattern yang tidak diperlukan atau diinginkan, misalnya seperti nomor halaman, link, dll. Dari data juga akan dicari judul peraturan dari file yang sudah diekstraksi sebelumnya. Setelah itu untuk data yang memiliki split mode pasal, data akan di pecah berdasarkan pasal dan pada bagian depan dari data akan ditambahkan informasi mengenai bab dan juga pasal dari data tersebut. Tidak hanya itu, setiap data juga akan dicari informasi headernya, yaitu judul peraturan ditambah keterangan pasal. 
 ### 3. Load
-Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan kedalam database dalam bentuk vektor. 
+Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan ke database dalam bentuk vektor. 
 ### 4. Embedding
-Pada tahap ini setiap data yang ada didatabase akan diambil untuk proses 
+Fitur untuk proses embedding setiap data yang baru dimuat. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Vektor merupakan representasi numeris yang optimal untuk search dan retrieve data. Jarak antara 2 vektor dapat mengukur hubungan konsep antar keduanya.
 ### 5. Upload File
 Fitur yang memungkinkan pengguna untuk mengunggah file PDF ke sistem. Setelah berhasil diunggah, file tersebut akan siap untuk menjalani proses ekstraksi, transformasi, embedding, dan penyimpanan ke dalam database.
 ### 6. Delete File and Data
