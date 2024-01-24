@@ -1,9 +1,11 @@
 <h1 align="center">ETL Automation API</h1>
 
 ## Information About this API
-
+API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding sumber data untuk data knowledge base. Pengguna dapat memasukan input berupa file peraturan dengan ekstensi PDF yang memiliki format berupa teks dan juga file config dalam format JSON untuk menentukan split mode, pattern untuk penghapusan pola yang tidak diperlukan, serta pattern pemecahan atau splitting untuk memperoleh judul dari peraturan yang dimasukan. Dengan menggunakan API ini pengguna dapat melakukan input dan embedding ke database dengan lebih cepat dan efisien dengan menyembunyikan proses yang terjadi di belakangnya.  
+ 
 ## Main Features
 ### 1. Extract
+
 ### 2. Transform
 ### 3. Load
 ### 4. Embedding
@@ -58,7 +60,7 @@ CREATE TABLE IF NOT EXISTS public.data
 ```
 <a name="pgvector"></a>
 ### 2. pgvector
-Untuk lebih detailnya bisa dilihat pada <a href='https://github.com/pgvector/pgvector'>repositori github pgvector</a>
+Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgvector'>repositori github pgvector</a>
 
 ## How to Run Locally
 1. Clone repositori ini
