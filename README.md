@@ -11,9 +11,9 @@ Fitur untuk proses pembersihan dan transformasi untuk data yang sudah diekstraks
 ### 3. Load
 Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan ke database dalam bentuk vektor. 
 ### 4. Embedding
-Fitur untuk proses embedding setiap data yang baru dimuat menggunakan model text-embedding-ada-002 dari OpenAI. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Vektor merupakan representasi numeris yang optimal untuk search dan retrieve data. Jarak antara 2 vektor dapat mengukur hubungan konsep antar keduanya. Terdapat 2 data embedding yaitu 
-- data content : gabungan judul sumber dan konten
-- data header : gabungan judul sumber, nama file sumber dan pasal (hanya untuk split mode pasal)
+Fitur untuk proses embedding setiap data yang baru dimuat menggunakan model text-embedding-ada-002 dari OpenAI. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Terdapat 2 data embedding yaitu 
+- embedding content : gabungan judul sumber dan konten
+- embdding header : gabungan judul sumber, nama file sumber dan pasal (hanya untuk split mode pasal)
 ### 5. Upload File
 Fitur yang memungkinkan pengguna untuk mengunggah file PDF ke sistem. Setelah berhasil diunggah, file tersebut akan siap untuk menjalani proses ekstraksi, transformasi, embedding, dan penyimpanan ke dalam database.
 ### 6. Delete File and Data
