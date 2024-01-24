@@ -1,29 +1,72 @@
 <h1 align="center">ETL Automation API</h1>
 
+## Table of Contents
+1. [Information About API](#api-info)
+2. [Our Main Feature](#main-feature)
+
+   a. [Extract](#extract)
+
+   b. [Transform](#transform)
+
+   c. [Load](#load)
+
+   d. [Embedding](#embedding)
+
+   e. [Upload File](#upload)
+
+   f. [Delete File and Data](#delete)
+
+   g. [Serve File](#serve)
+
+   h. [Get Metadata](#get-metadata) 
+4. [System's Flow](#systems-flow)
+5. [Tech Stack](#tech-stack)
+6. [How to Set Up](#set-up)
+   
+   a. [Postgresql](#postgres)
+   
+   b. [pgvector](#pgvector)
+7. [How to Run Locally](#run-local)
+8. [How to Deploy](#deploy)
+9. [Live Instance](#live-instance)
+10. [API Endpoint](#endpoint)
+11. [Related Repository](#related-repo)
+
+<a name="api-info"></a>
 ## Information About this API
 API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding sumber data untuk data knowledge base. Pengguna dapat memasukan input berupa file peraturan dengan ekstensi PDF yang memiliki format berupa teks dan juga file config dalam format JSON untuk menentukan split mode, pattern untuk penghapusan pola yang tidak diperlukan, serta pattern pemecahan atau splitting untuk memperoleh judul dari peraturan yang dimasukan. Dengan menggunakan API ini pengguna dapat melakukan input dan embedding ke database dengan lebih cepat dan efisien dengan menyembunyikan proses yang terjadi di belakangnya.  
- 
+
+<a name="main-feature"></a>
 ## Main Features
-### 1. Extract
+<a name="extract"></a>
+### a. Extract
 Fitur untuk proses ektraksi file PDF menjadi sebuah teks. Untuk file yang memiliki split mode pasal, file akan diekstraksi menjadi satu teks utuh. Untuk file yang memiliki split mode non pasal, file akan diekstraksi per halaman dan menghasilkan output berupa list teks. 
-### 2. Transform
+<a name="transform"></a>
+### b. Transform
 Fitur untuk proses pembersihan dan transformasi untuk data yang sudah diekstraksi. Data akan dibersihkan dari pattern yang tidak diperlukan atau diinginkan, misalnya seperti nomor halaman, link, dll. Dari data juga akan dicari judul peraturan dari file yang sudah diekstraksi sebelumnya. Setelah itu untuk data yang memiliki split mode pasal, data akan di pecah berdasarkan pasal dan pada bagian depan dari data akan ditambahkan informasi mengenai bab dan juga pasal dari data tersebut. Tidak hanya itu, setiap data juga akan dicari informasi headernya, yaitu judul peraturan ditambah keterangan pasal. 
-### 3. Load
+<a name="load"></a>
+### c. Load
 Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan ke database dalam bentuk vektor. 
-### 4. Embedding
+<a name="embedding"></a>
+### d. Embedding
 Fitur untuk proses embedding setiap data yang baru dimuat menggunakan model text-embedding-ada-002 dari OpenAI. Embedding merupakan proses mengekstrak makna atau konsep informasi dari data teks menjadi sebuah vektor. Terdapat 2 proses embedding yaitu 
 - embedding content : gabungan judul sumber dan konten
 - embedding header : gabungan judul sumber, nama file sumber dan pasal (hanya untuk split mode pasal)
-### 5. Upload File
+<a name="upload"></a>
+### e. Upload File
 Fitur yang memungkinkan pengguna untuk mengunggah file PDF ke sistem. Setelah berhasil diunggah, file tersebut akan siap untuk menjalani proses ekstraksi, transformasi, embedding, dan penyimpanan ke dalam database.
-### 6. Delete File and Data
+<a name="delete"></a>
+### f. Delete File and Data
 Fitur yang memungkinkan pengguna untuk menghapus file beserta data terkait dari sistem. Pengguna dapat memilih file yang ingin dihapus dengan memasukan id dari file. Id tersebut diperoleh dari id file yang tersimpan di database. Sistem kemudian akan menghapus file dari server beserta dengan data-datanya yang tersimpan di database.
-### 7. Serve File
+<a name="serve"></a>
+### g. Serve File
 Fitur yang memungkinkan pengguna untuk mengakses file yang telah diunggah dengan memasukan url yang terkait dengan file tersebut.
-### 8. Get Metadata
+<a name="get-metadata"></a>
+### h. Get Metadata
 Fitur yang memberikan informasi metadata terkait file yang telah diunggah, seperti id file, nama file, judul file, tanggal unggah, dan url tempat file disimpan. Metadata ini dapat memberikan gambaran singkat kepada pengguna mengenai file yang telah berhasil diunggah ke dalam sistem.
 
-## System Flow
+<a name="systems-flow"></a>
+## System's Flow
 Berikut adalah alur proses ETL dan penanaman data.
 ![Alur ETL dan Embedding](https://drive.google.com/uc?id=1m0AnbubnMsr-_8Qd88fsc0mvMIEzTQy7)
 1. File PDF diekstrak menjadi teks
@@ -44,7 +87,7 @@ Berikut adalah alur proses ETL dan penanaman data.
 <a name="set-up"></a>
 ## How to Set Up
 <a name="postgres"></a>
-### 1. Postgresql
+### a. Postgresql
 Skema database
 ```
 CREATE DATABASE IF NOT EXISTS your_database_name;
@@ -77,9 +120,10 @@ CREATE TABLE IF NOT EXISTS public.data
 )
 ```
 <a name="pgvector"></a>
-### 2. pgvector
+### b. pgvector
 Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgvector'>repositori github pgvector</a>
 
+<a name="run-local"></a>
 ## How to Run Locally
 1. Clone repositori ini
    ```
@@ -126,6 +170,7 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
     http://localhost:5000/
     ```
 
+<a name="deploy"></a>
 ## How to Deploy
 1. Buat file .env
    ```
@@ -149,9 +194,12 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
     ```
     http://<ip-host>:5001/
     ```
+    
+<a name="live-instance"></a>
 ## Live Instance
 http://10.10.6.69:5001
 
+<a name="endpoint"></a>
 ## API Endpoint
 ### 1. Post source file
 - ##### Route
@@ -219,6 +267,7 @@ http://10.10.6.69:5001
 - #### Response
   PDF file
 
+<a name="related-repo"></a>
 ## Related Repository
 - <a href='https://github.com/dutaramadhan/API-Query-Data-PT-SMI'>API-Query-Data-PT-SMI</a>
 
