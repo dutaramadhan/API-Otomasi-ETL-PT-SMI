@@ -5,11 +5,15 @@ API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding s
  
 ## Main Features
 ### 1. Extract
-
+fitur untuk proses ektraksi file PDF menjadi sebuah teks. Untuk file yang memiliki split mode pasal, file akan diekstraksi menjadi satu teks utuh. Untuk file yang memiliki split mode non pasal, file akan diekstraksi per halaman dan menghasilkan output berupa list teks. 
 ### 2. Transform
+Fitur untuk proses pembersihan dan transformasi untuk data yang sudah diekstraksi. Data akan dibersihkan dari pattern yang tidak diperlukan atau diinginkan, misalnya seperti nomor halaman, link, dll. Dari data juga akan dicari judul peraturan dari file yang sudah diekstraksi sebelumnya. Setelah itu untuk data yang memiliki split mode pasal, data akan di pecah berdasarkan pasal dan pada bagian depan dari data akan ditambahkan informasi mengenai bab dan juga pasal dari data tersebut. Tidak hanya itu, setiap data juga akan dicari informasi headernya, yaitu judul peraturan ditambah keterangan pasal. 
 ### 3. Load
+Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval atau diambil untuk proses embedding. Hasil dari proses embedding tersebut akan disimpan kedalam database dalam bentuk vektor. 
 ### 4. Embedding
+Pada tahap ini setiap data yang ada didatabase akan diambil untuk proses 
 ### 5. Upload File
+Fitur 
 ### 6. Delete File and Data
 ### 7. Serve File
 ### 8. Get Metadata
