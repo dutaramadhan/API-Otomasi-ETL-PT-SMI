@@ -13,10 +13,13 @@ Fitur untuk proses penyimpanan data ke dalam database yang kemudian di-retrieval
 ### 4. Embedding
 Pada tahap ini setiap data yang ada didatabase akan diambil untuk proses 
 ### 5. Upload File
-Fitur 
+Fitur yang memungkinkan pengguna untuk mengunggah file PDF ke sistem. Setelah berhasil diunggah, file tersebut akan siap untuk menjalani proses ekstraksi, transformasi, embedding, dan penyimpanan ke dalam database.
 ### 6. Delete File and Data
+Fitur yang memungkinkan pengguna untuk menghapus file beserta data terkait dari sistem. Pengguna dapat memilih file yang ingin dihapus dengan memasukan id dari file. Id tersebut diperoleh dari id file yang tersimpan di database. Sistem kemudian akan menghapus file dari server beserta dengan data-datanya yang tersimpan di database.
 ### 7. Serve File
+Fitur ini memungkinkan pengguna untuk mengakses file yang telah diunggah dengan memasukan url yang terkait dengan file tersebut.
 ### 8. Get Metadata
+Fitur ini memberikan informasi metadata terkait file yang telah diunggah, seperti id file, nama file, judul file, tanggal unggah, dan url tempat file disimpan. Metadata ini dapat memberikan gambaran singkat kepada pengguna mengenai file yang telah berhasil diunggah ke dalam sistem.
 
 <a name="tech-stack"></a>
 ## Tech Stack
