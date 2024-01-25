@@ -130,6 +130,10 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
   ```
   {
         "split_mode": "pasal",
+        "split_patterns":  [
+           "(\\n\\s*BAB [IXVLCM]+\\s*\\n.*)",
+           "(\n\\s*Pasal \\d+\\s*\\n)"
+         ],
         "unnecessary_patterns" : [
             "\\d+\\s*/\\s*\\d+",
             "www.hukumonline.com",
