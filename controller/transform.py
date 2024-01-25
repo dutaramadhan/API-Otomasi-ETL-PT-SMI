@@ -27,14 +27,22 @@ def findTitle(title_patterns, chunk):
   return title
 
 def recursive_split(patterns, texts, header):
+  results = []
+  headers = []
+  pattern = patterns[0]
   for i in range(len(texts)):
-    pattern = patterns[0]
-    results, next_header = splitTextBy(pattern, texts[i], header[i])
+    cur_results, cur_header = splitTextBy(pattern, texts[i], header[i])
     next_patterns = patterns[1:]
+
     if not next_patterns:
-      return results, header
+      results.extend(cur_results)
+      header.extend(cur_header)
     else:
-      return recursive_split(next_patterns, results, next_header)
+      next_results, next_header = recursive_split(next_patterns, results, next_header)
+      results.extend(next_results)
+      header.extend(next_header)
+
+  return results, headers
 
 def textSplit(textpdf):
   chunks = []
@@ -43,7 +51,7 @@ def textSplit(textpdf):
   result, context = splitTextBy(r'\s*(PENJELASAN)\s*\n', textpdf)
 
   # Pattern split
-  split_pattern = [
+  split_patterns = [
     '(\n\s*BAB [IXVLCM]+\s*\n.*)',
     '(\n\s*Pasal \d+\s*\n)'
   ]
