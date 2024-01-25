@@ -51,17 +51,6 @@ def textSplit(textpdf, split_patterns):
   result, context = splitTextBy(r'\s*(PENJELASAN)\s*\n', textpdf)
 
   results, header = recursive_split(split_patterns, result, context)
-  """
-  # Split Bab
-  for i in range(len(result)):
-    bab_pattern = r'(\n\s*BAB [IXVLCM]+\s*\n.*)'
-    bab_text, bab = splitTextBy(bab_pattern, result[i], context[i])
-
-    # Split Pasal
-    for j in range(len(bab)):
-      pasal_pattern = r'(\n\s*Pasal \d+\s*\n)'
-      pasal_text, pasal = splitTextBy(pasal_pattern, bab_text[j], bab[j])
-  """
   # store
   text_splitter = NLTKTextSplitter(chunk_size=2000)
   for k in range(len(results)):
