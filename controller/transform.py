@@ -36,25 +36,20 @@ def recursive_split(patterns, texts, header):
 
     if not next_patterns:
       results.extend(cur_results)
-      header.extend(cur_header)
+      headers.extend(cur_header)
     else:
-      next_results, next_header = recursive_split(next_patterns, results, next_header)
+      next_results, next_header = recursive_split(next_patterns, cur_results, cur_header)
       results.extend(next_results)
-      header.extend(next_header)
+      headers.extend(next_header)
 
   return results, headers
 
-def textSplit(textpdf):
+def textSplit(textpdf, split_patterns):
   chunks = []
 
   # Split Penjelasan
   result, context = splitTextBy(r'\s*(PENJELASAN)\s*\n', textpdf)
 
-  # Pattern split
-  split_patterns = [
-    '(\n\s*BAB [IXVLCM]+\s*\n.*)',
-    '(\n\s*Pasal \d+\s*\n)'
-  ]
   results, header = recursive_split(split_patterns, result, context)
   """
   # Split Bab
@@ -89,12 +84,12 @@ def textSplit(textpdf):
 
   return [item for item in chunks if item]
 
-def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns):
+def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns, split_patterns):
   # Delete unnecessary pattern
   result = cleanText(unnecessary_patterns, textpdf)
 
   # Split Text
-  chunks = textSplit(result)
+  chunks = textSplit(result, split_patterns)
 
   # Find Title
   title = findTitle(title_patterns, chunks[0])

@@ -51,7 +51,7 @@ def extract_files(pdf_file, config_data):
 def transform_files(data):
     try:
         if data['config_data']['split_mode'] == "pasal":
-            result = transform.transform_pasal(data['pdf_content'], data['pdf_filename'], data['config_data']['unnecessary_patterns'], data['config_data']['title_patterns'])
+            result = transform.transform_pasal(data['pdf_content'], data['pdf_filename'], data['config_data']['unnecessary_patterns'], data['config_data']['title_patterns'], data['config_data']['split_patterns'])
         else:
             result = transform.transform_non_pasal(data['pdf_content'], data['pdf_filename'], data['config_data']['unnecessary_patterns'], data['config_data']['title_patterns'])
         return result
@@ -79,7 +79,7 @@ def post_source():
                 model.insertChunkData(source_id, content)
     
             header = extracted_source['config_data']['split_mode'] == 'pasal'
-            #embedding.threaded_create_embeddings(source_id, header=header)
+            embedding.threaded_create_embeddings(source_id, header=header)
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:
