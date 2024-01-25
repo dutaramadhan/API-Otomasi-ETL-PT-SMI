@@ -26,11 +26,13 @@
    a. [Postgresql](#postgres)
    
    b. [pgvector](#pgvector)
-7. [How to Run Locally](#run-local)
-8. [How to Deploy](#deploy)
-9. [Live Instance](#live-instance)
-10. [API Endpoint](#endpoint)
-11. [Related Repository](#related-repo)
+
+   c. [config.json](#config)
+8. [How to Run Locally](#run-local)
+9. [How to Deploy](#deploy)
+10. [Live Instance](#live-instance)
+11. [API Endpoint](#endpoint)
+12. [Related Repository](#related-repo)
 
 <a name="api-info"></a>
 ## Information About this API
@@ -122,6 +124,47 @@ CREATE TABLE IF NOT EXISTS public.data
 <a name="pgvector"></a>
 ### b. pgvector
 Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgvector'>repositori github pgvector</a>
+<a name="config"></a>
+### c. config.json
+- Split mode pasal
+  ```
+  {
+        "folder_path": "D:/Kuliah/Kerja Praktik/Data Source/Pasal",
+        "split_mode": "pasal",
+        "unnecessary_patterns" : [
+            "\\d+\\s*/\\s*\\d+",
+            "www.hukumonline.com",
+            "\\d+\\n/\\n\\d+",
+            "/pusatdata",
+            "www .huku monline.com",
+            "Menemukan kesalahan ketik dalam dokumen[^\\n]*",
+            "Klik di sini[^\\n]*",
+            "untuk perbaikan.[^\\n]*",
+            "\\n\\n\\n\\n",
+            "\\n\\n\\n"
+        ],
+        "title_patterns": [
+            "([\\s\\S]+?)DENGAN",
+            "([\\s\\S]+?)PRESIDEN",
+            "Perihal:\\s*\\n([\\s\\S]+)\\s*\\n\\s*Tanggal :"
+          ]
+    }
+  ```
+- Split mode non pasal
+  ```
+  {
+        "folder_path": "D:/Kuliah/Keja Paktik/Data Source/Internal",
+        "split_mode": "page",
+        "unnecessary_patterns": [
+            "\\d+\\s*/\\s*\\d+",
+            "\\d+\\n/\\n\\d+",
+            "\\s*\\n \\n \\n\\s*"
+        ],
+        "title_patterns": [
+            "Perihal:\\s*\\n([\\s\\S]+)\\s*\\n\\s*Tanggal :"
+          ]
+    }
+  ```
 
 <a name="run-local"></a>
 ## How to Run Locally
