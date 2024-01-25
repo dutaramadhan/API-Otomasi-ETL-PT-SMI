@@ -103,17 +103,21 @@ def getSourceMetadata():
 def deleteSourceData(id):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
+  select_query = "SELECT source_name FROM source_metadata WHERE id = %s"
   delete_query = """
   BEGIN;
   DELETE FROM data WHERE source_id = %s;
   DELETE FROM source_metadata WHERE id = %s;
   COMMIT;
   """
-
-  # Execute the update query
+  cursor.execute(select_query, (id,))
+  data = cursor.fetchone()
+  
   cursor.execute(delete_query, (id,id))
 
   # Commit the changes
   conn.commit()
   cursor.close()
   conn.close()
+
+  return data[0]
