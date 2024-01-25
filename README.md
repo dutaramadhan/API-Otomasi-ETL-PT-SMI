@@ -129,7 +129,6 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
 - Split mode pasal
   ```
   {
-        "folder_path": "D:/Kuliah/Kerja Praktik/Data Source/Pasal",
         "split_mode": "pasal",
         "unnecessary_patterns" : [
             "\\d+\\s*/\\s*\\d+",
@@ -153,7 +152,6 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
 - Split mode non pasal
   ```
   {
-        "folder_path": "D:/Kuliah/Keja Paktik/Data Source/Internal",
         "split_mode": "page",
         "unnecessary_patterns": [
             "\\d+\\s*/\\s*\\d+",
