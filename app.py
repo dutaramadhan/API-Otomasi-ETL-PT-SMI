@@ -64,7 +64,7 @@ def post_source():
                 model.insertChunkData(source_id, content)
     
             header = extracted_source['config_data']['split_mode'] == 'pasal'
-            embedding.threaded_create_embeddings(source_id, header=header)
+            #embedding.threaded_create_embeddings(source_id, header=header)
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:

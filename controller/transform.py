@@ -24,12 +24,29 @@ def findTitle(title_patterns, chunk):
         break
   return title
 
+def recursive_split(patterns, texts, header):
+  for i in range(len(texts)):
+    pattern = patterns[0]
+    results, next_header = splitTextBy(pattern, texts[i], header[i])
+    next_patterns = patterns[1:]
+    if not next_patterns:
+      return results, header
+    else:
+      return recursive_split(next_patterns, results, next_header)
+
 def textSplit(textpdf):
   chunks = []
 
   # Split Penjelasan
   result, context = splitTextBy(r'\s*(PENJELASAN)\s*\n', textpdf)
 
+  # Pattern split
+  split_pattern = [
+    '(\n\s*BAB [IXVLCM]+\s*\n.*)',
+    '(\n\s*Pasal \d+\s*\n)'
+  ]
+  results, header = recursive_split(split_patterns, result, context)
+  """
   # Split Bab
   for i in range(len(result)):
     bab_pattern = r'(\n\s*BAB [IXVLCM]+\s*\n.*)'
@@ -39,13 +56,13 @@ def textSplit(textpdf):
     for j in range(len(bab)):
       pasal_pattern = r'(\n\s*Pasal \d+\s*\n)'
       pasal_text, pasal = splitTextBy(pasal_pattern, bab_text[j], bab[j])
-
-      # store
-      for k in range(len(pasal)):
-        text_splitter = NLTKTextSplitter(chunk_size=2000)
-        texts = text_splitter.split_text(pasal_text[k])
-        for text in texts:
-          chunks.append(pasal[k] + '\n' + text)
+  """
+  # store
+  text_splitter = NLTKTextSplitter(chunk_size=2000)
+  for k in range(len(results)):
+    texts = text_splitter.split_text(results[k])
+    for text in texts:
+      chunks.append(header[k] + '\n' + text)
 
   split_patterns = [
         (r'(Disahkan [\s\S]+)', 1),
