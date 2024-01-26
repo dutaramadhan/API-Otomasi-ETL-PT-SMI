@@ -129,7 +129,7 @@ def get_data(source_id):
   query = """
     SELECT
       CONCAT(LEFT(data.content, 200), '....'),
-      LENGTH(content) AS len,
+      LENGTH(content) AS len
     FROM data
     WHERE source_id = %s;
   """
@@ -163,4 +163,4 @@ def get_data_info(source_id):
   
   cursor.close()
   conn.close()
-  return data[0]
+  return data
