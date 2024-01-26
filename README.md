@@ -135,6 +135,10 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
            "(\\n\\s*BAB [IXVLCM]+\\s*\\n.*)",
            "(\n\\s*Pasal \\d+\\s*\\n)"
          ],
+        "resplit_patterns": [
+           "(Disahkan [\\s\\S]+)",
+           "(Ditetapkan [\\s\\S]+)"
+        ],
         "unnecessary_patterns" : [
             "\\d+\\s*/\\s*\\d+",
             "www.hukumonline.com",
