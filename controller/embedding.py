@@ -6,31 +6,23 @@ import time
 import model
 from controller import transform
 import threading
+from openai import OpenAI
 
 load_dotenv()
+client = OpenAI(api_key = os.getenv('API_KEY'))
 
 def get_embedding(text):
-    url = "https://api.openai.com/v1/embeddings"
-
-    payload = json.dumps({
-        "input": text,
-        "model": "text-embedding-ada-002",
-        "encoding_format": "float"
-    })
-    headers = {
-        'Authorization': 'Bearer ' + os.getenv('API_KEY'),
-        'Content-Type': 'application/json',
-        'Cookie': '__cf_bm=Ghr17uXmAZAP3sAagI5nlm2Ex4fSgiGKZGkREvPnsOw-1704772804-1-AUlILWecFQtgsKkszWgeW2iUzF6M/ai9qRJVSxnA0/NP7bCdqWX4CmsGjo4F6UP7n382NwuTgTNV/RWe2GfcqEM=; _cfuvid=1fYoJQCnpqqs.xdVCMebdMShJREPBmizEhyzPI.C9cE-1704772804555-0-604800000'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    return response.json()
+    response = client.embeddings.create(
+        input=text,
+        model="text-embedding-ada-002"
+    )
+    return response
 
 def embedding_content(content, source_title):
     text = source_title + '\n' + content
     response_embedding = get_embedding(text)
-    embedding_vector = response_embedding['data'][0]['embedding']
-    token = response_embedding['usage']['total_tokens']
+    embedding_vector = response_embedding.data[0].embedding
+    token = response_embedding.usage.total_tokens
     return embedding_vector, token
 
 def embedding_header(content, source_name, source_title):
@@ -39,7 +31,7 @@ def embedding_header(content, source_name, source_title):
         header_embedding_vector = None
     else:
         header_embedding = get_embedding(header)
-        header_embedding_vector = header_embedding['data'][0]['embedding']
+        header_embedding_vector = header_embedding.data[0].embedding
     return header_embedding_vector
 
 def create_embeddings(source_id, header=False):
