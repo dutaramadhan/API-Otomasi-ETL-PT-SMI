@@ -292,7 +292,12 @@ http://10.10.6.69:5001
     },
   ]
   ```
-### 3. Delete Source Data
+### 3. Get data
+- ##### Route
+  ```
+  GET /smi/source/data
+  ```
+### 4. Delete Source Data
 - ##### Route
   ```
   DELETE /smi/source
@@ -303,9 +308,30 @@ http://10.10.6.69:5001
   ```
 - ##### Response
   ```
+  {
+    "count": int,
+    "count_embedded": int,
+    "data": [
+       {
+          "content": string,
+          "length": int
+       },
+    ],
+    "embedding_proccess": percent,
+    "source_name": string,
+    "source_title": string,
+    "source_uri": string
+  }
+  ```
+- ##### Parameters
+  ```
+  id: int
+  ```
+- ##### Response
+  ```
   {"success": "Sucessfully deleted the data and file"}
   ```
-### 4. Serve File
+### 5. Serve File
 - #### Route
   ```
   GET /files/<path>
