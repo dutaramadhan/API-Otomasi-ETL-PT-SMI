@@ -130,10 +130,7 @@ def get_data(source_id):
     SELECT
       CONCAT(LEFT(data.content, 200), '....'),
       LENGTH(content) AS len,
-      source_uri
     FROM data
-    JOIN source_metadata
-    ON data.source_id=source_metadata.id
     WHERE source_id = %s;
   """
   cursor.execute(query, (source_id,))
@@ -143,3 +140,27 @@ def get_data(source_id):
   cursor.close()
   conn.close()
   return data
+
+def get_data_info(source_id):
+  conn = psycopg2.connect(**db_params)
+  cursor = conn.cursor()
+
+  query = """
+    SELECT 
+      COUNT(data.id) AS count,
+      COUNT(CASE WHEN embedding IS NOT NULL THEN 1 END) AS count_embedded,
+      source_name,
+      source_uri,
+      source_title
+    FROM data
+    JOIN source_metadata ON source_metadata.id = data.source_id
+    WHERE data.source_id = %s
+    GROUP BY source_name, source_uri, source_title;
+  """
+  cursor.execute(query, (source_id,))
+
+  data = cursor.fetchone()
+  
+  cursor.close()
+  conn.close()
+  return data[0]

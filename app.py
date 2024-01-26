@@ -111,14 +111,23 @@ def get_data():
     try:
         source_id = request.args.get('id')
         source_data = model.get_data(source_id)
-        response = []
+        source_info = model.get_data_info(source_id)
+        
+        response = {
+            'count': source_info[0],
+            'count_embedded': source_info[1],
+            'embedding_proccess': f'{source_info[1] / source_info[0] * 100:.3f}%',
+            'source_name': source_info[2],
+            'source_uri': source_info[3],
+            'source_title': source_info[4],
+            'data': [],
+        }
         for data in source_data:
             entry = {
                 "content" : data[0], 
                 "length" : data[1],
-                "source_uri" : data[2],
             }
-            response.append(entry)
+            response['data'].append(entry)
         return jsonify(response)
     except Exception as e:
         error_message = {'error': str(e)}
