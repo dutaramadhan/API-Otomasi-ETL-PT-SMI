@@ -26,7 +26,7 @@ def findTitle(title_patterns, chunk):
         break
   return title
 
-def recursive_split(patterns, texts, header):
+def recursive_split(patterns, texts, header=''):
   results = []
   headers = []
   pattern = patterns[0]
@@ -47,11 +47,11 @@ def recursive_split(patterns, texts, header):
 def textSplit(textpdf, split_patterns):
   chunks = []
 
-  # Split Penjelasan
-  result, context = splitTextBy(r'\s*(PENJELASAN)\s*\n', textpdf)
+  results = [textpdf]
 
-  results, header = recursive_split(split_patterns, result, context)
-  # store
+  results, header = recursive_split(split_patterns, results)
+
+  # split by chunk size
   text_splitter = NLTKTextSplitter(chunk_size=2000)
   for k in range(len(results)):
     texts = text_splitter.split_text(results[k])
