@@ -297,11 +297,6 @@ http://10.10.6.69:5001
   ```
   GET /smi/source/data
   ```
-### 4. Delete Source Data
-- ##### Route
-  ```
-  DELETE /smi/source
-  ```
 - ##### Parameters
   ```
   id: int
@@ -322,6 +317,11 @@ http://10.10.6.69:5001
     "source_title": string,
     "source_uri": string
   }
+  ```
+### 4. Delete Source Data
+- ##### Route
+  ```
+  DELETE /smi/source
   ```
 - ##### Parameters
   ```
