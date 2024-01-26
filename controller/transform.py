@@ -85,7 +85,7 @@ def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns, spl
 
 def transform_non_pasal(textpdf, filename, unnecessary_patterns, title_patterns):
   # Extract 
-  chunks = extract.extractPDFPerPage(textpdf)
+  chunks = extract.extract_pdf_per_page(textpdf)
 
   # Delete unnecessary pattern
   for i in range(len(chunks)):

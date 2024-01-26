@@ -1,6 +1,6 @@
 import PyPDF2
 
-def extractPDF(file):
+def extract_pdf(file):
   pdf_reader = PyPDF2.PdfReader(file)
 
   textpdf = ''
@@ -11,7 +11,7 @@ def extractPDF(file):
 
   return textpdf
 
-def extractPDFPerPage(filepath):
+def extract_pdf_per_page(filepath):
   pdfReader = PyPDF2.PdfReader(filepath)
 
   textPDF = [page.extract_text() for page in pdfReader.pages]

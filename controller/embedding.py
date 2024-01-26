@@ -44,7 +44,7 @@ def embedding_header(content, source_name, source_title):
 
 def create_embeddings(source_id, header=False):
     while True:
-        data = model.selectOne(source_id)
+        data = model.select_one(source_id)
         if not data:
             print("completed")
             break
@@ -56,7 +56,7 @@ def create_embeddings(source_id, header=False):
         if header:
             header_embedding_vector = embedding_header(content, source_name, source_title)
 
-        model.storeEmbedding(int(id), embedding_vector, int(token), header_embedding_vector)
+        model.store_embedding(int(id), embedding_vector, int(token), header_embedding_vector)
 
         print(id, token)
         time.sleep(60/500)

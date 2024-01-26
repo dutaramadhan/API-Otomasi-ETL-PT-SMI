@@ -37,9 +37,9 @@ def extract_files(pdf_file, config_data):
         # Access the PDF file
         pdf_filename = pdf_file.filename
         if config_data['split_mode'] == "pasal": 
-            pdf_content = extract.extractPDF(pdf_file)
+            pdf_content = extract.extract_pdf(pdf_file)
         else:
-            pdf_content = extract.extractPDFPerPage(pdf_file)
+            pdf_content = extract.extract_pdf_per_page(pdf_file)
 
         result = {'config_data': config_data, 'pdf_filename': pdf_filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
 
@@ -73,10 +73,10 @@ def post_source():
             source_title, transformed_source = transform_files(extracted_source)
             print(pdf_file, source_title, source_uri)
 
-            source_id = model.insertSourceMetadata(source_uri, extracted_source['pdf_filename'], source_title)
+            source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
 
             for index, content in enumerate(transformed_source):
-                model.insertChunkData(source_id, content)
+                model.insert_chunk_data(source_id, content)
     
             header = extracted_source['config_data']['split_mode'] == 'pasal'
             embedding.threaded_create_embeddings(source_id, header=header)
@@ -90,7 +90,7 @@ def post_source():
 @app.route('/smi/source', methods=['GET'])
 def get_source_metadata():
     try:
-        source_metadata = model.getSourceMetadata()
+        source_metadata = model.get_source_metadata()
         response = []
         for metadata in source_metadata:
             entry = {
@@ -106,11 +106,29 @@ def get_source_metadata():
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
     
+@app.route('/smi/source/data', methods=['GET'])
+def get_data():
+    try:
+        source_id = request.args.get('id')
+        source_data = model.get_data(source_id)
+        response = []
+        for data in source_data:
+            entry = {
+                "content" : data[0], 
+                "length" : data[1],
+                "source_uri" : data[2],
+            }
+            response.append(entry)
+        return jsonify(response)
+    except Exception as e:
+        error_message = {'error': str(e)}
+        return jsonify(error_message), 400
+    
 @app.route("/smi/source", methods=['DELETE'])
 def delete_source():
     try:
         id = request.args.get('id')
-        source_name = model.deleteSourceData(id)
+        source_name = model.delete_source_data(id)
         delete_file(source_name)
         return jsonify({"success": "Sucessfully deleted the data and file"})
     except Exception as e:

@@ -13,7 +13,7 @@ db_params = {
     'port':  os.getenv('DB_PORT'),
 }
 
-def insertSourceMetadata(source_uri, source_name, title):
+def insert_source_metadata(source_uri, source_name, title):
   conn = psycopg2.connect(**db_params)
   cur = conn.cursor()
 
@@ -36,7 +36,7 @@ def insertSourceMetadata(source_uri, source_name, title):
     conn.close()
 
 
-def insertChunkData(source_id, chunk):
+def insert_chunk_data(source_id, chunk):
   conn = psycopg2.connect(**db_params)
   cur = conn.cursor()
 
@@ -58,7 +58,7 @@ def insertChunkData(source_id, chunk):
     cur.close()
     conn.close()
 
-def selectOne(source_id):
+def select_one(source_id):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
 
@@ -74,7 +74,7 @@ def selectOne(source_id):
   conn.close()
   return data
 
-def storeEmbedding(id, embedding, token, header_embedding):
+def store_embedding(id, embedding, token, header_embedding):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
   update_query = "UPDATE data SET embedding = %s, header_embedding = %s, total_tokens = %s WHERE id = %s;"
@@ -87,7 +87,7 @@ def storeEmbedding(id, embedding, token, header_embedding):
   cursor.close()
   conn.close()
 
-def getSourceMetadata():
+def get_source_metadata():
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
 
@@ -100,7 +100,7 @@ def getSourceMetadata():
   conn.close()
   return data
 
-def deleteSourceData(id):
+def delete_source_data(id):
   conn = psycopg2.connect(**db_params)
   cursor = conn.cursor()
   select_query = "SELECT source_name FROM source_metadata WHERE id = %s"
