@@ -131,6 +131,7 @@ Untuk lebih jelasnya bisa dilihat pada <a href='https://github.com/pgvector/pgve
   {
         "split_mode": "pasal",
         "split_patterns":  [
+           "\\s*(PENJELASAN)\\s*\\n",
            "(\\n\\s*BAB [IXVLCM]+\\s*\\n.*)",
            "(\n\\s*Pasal \\d+\\s*\\n)"
          ],
