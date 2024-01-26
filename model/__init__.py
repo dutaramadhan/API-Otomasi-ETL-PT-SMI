@@ -121,3 +121,25 @@ def deleteSourceData(id):
   conn.close()
 
   return data[0]
+
+def get_data(source_id):
+  conn = psycopg2.connect(**db_params)
+  cursor = conn.cursor()
+
+  query = """
+    SELECT
+      CONCAT(LEFT(data.content, 200), '....'),
+      LENGTH(content) AS len,
+      source_uri
+    FROM data
+    JOIN source_metadata
+    ON data.source_id=source_metadata.id
+    WHERE source_id = %s;
+  """
+  cursor.execute(query, (source_id,))
+
+  data = cursor.fetchall()
+  
+  cursor.close()
+  conn.close()
+  return data
