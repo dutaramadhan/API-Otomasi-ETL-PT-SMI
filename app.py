@@ -5,6 +5,7 @@ from controller import extract, transform, embedding
 import model
 import os
 import logging
+import threading
 
 app = Flask(__name__)
 load_dotenv()
@@ -16,8 +17,10 @@ def upload_file(pdf_file):
     try:
         if pdf_file:
             # Save the file to the specified folder
-            pdf_file.save(os.path.join('files', pdf_file.filename))
-            return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
+            path = os.path.join('files', pdf_file.filename)
+            pdf_file.save(path)
+            url = 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
+            return url, path
     except Exception as e:
         abort(400, str(e))
 
@@ -58,6 +61,18 @@ def transform_files(data):
     except Exception as e:
         abort(400, str(e))
 
+def ETL_proccess(path, config_data, source_uri):
+    extracted_source = extract_files(path, config_data)
+    source_title, transformed_source = transform_files(extracted_source)
+
+    source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
+
+    for index, content in enumerate(transformed_source):
+        model.insert_chunk_data(source_id, content)
+    
+    header = extracted_source['config_data']['split_mode'] == 'pasal'
+    embedding.threaded_create_embeddings(source_id, header=header)
+
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
@@ -68,18 +83,9 @@ def post_source():
         config_data = json.load(request.files['config'])
 
         for pdf_file in request.files.getlist('pdf_file'):
-            source_uri = upload_file(pdf_file)
-            extracted_source = extract_files(pdf_file, config_data)
-            source_title, transformed_source = transform_files(extracted_source)
-            print(pdf_file, source_title, source_uri)
-
-            source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
-
-            for index, content in enumerate(transformed_source):
-                model.insert_chunk_data(source_id, content)
-    
-            header = extracted_source['config_data']['split_mode'] == 'pasal'
-            embedding.threaded_create_embeddings(source_id, header=header)
+            source_uri, path = upload_file(pdf_file)
+            thread = threading.Thread(target=ETL_proccess, args=(path, config_data, source_uri))
+            thread.start()    
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
     except Exception as e:
