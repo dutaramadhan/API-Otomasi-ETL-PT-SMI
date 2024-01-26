@@ -44,7 +44,7 @@ def recursive_split(patterns, texts, header=''):
 
   return results, headers
 
-def textSplit(textpdf, split_patterns):
+def textSplit(textpdf, split_patterns, resplit_patterns):
   chunks = []
 
   results = [textpdf]
@@ -58,27 +58,22 @@ def textSplit(textpdf, split_patterns):
     for text in texts:
       chunks.append(header[k] + '\n' + text)
 
-  split_patterns = [
-        (r'(Disahkan [\s\S]+)', 1),
-        (r'(Ditetapkan [\s\S]+)', 1)
-    ]
-
-  for pattern, insert_index in split_patterns:
+  for pattern in resplit_patterns:
     for i in range(len(chunks)):
       matches = re.findall(pattern, chunks[i])
       if matches:
         split_last = re.split(pattern, chunks[i])
         chunks[i] = split_last[0]
-        chunks.insert(i + insert_index, split_last[1])
+        chunks.insert(i + 1, split_last[1])
 
   return [item for item in chunks if item]
 
-def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns, split_patterns):
+def transform_pasal(textpdf, filename, unnecessary_patterns, title_patterns, split_patterns, resplit_patterns):
   # Delete unnecessary pattern
   result = cleanText(unnecessary_patterns, textpdf)
 
   # Split Text
-  chunks = textSplit(result, split_patterns)
+  chunks = textSplit(result, split_patterns, resplit_patterns)
 
   # Find Title
   title = findTitle(title_patterns, chunks[0])
