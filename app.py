@@ -20,7 +20,7 @@ def upload_file(pdf_file):
             path = os.path.join('files', pdf_file.filename)
             pdf_file.save(path)
             url = 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
-            return url, path
+            return url, path, pdf_file.filename
     except Exception as e:
         abort(400, str(e))
 
@@ -35,16 +35,15 @@ def delete_file(filename):
     except Exception as e:
         abort(400, str(e))
 
-def extract_files(pdf_file, config_data):
+def extract_files(filepath, filename, config_data):
     try:
         # Access the PDF file
-        pdf_filename = pdf_file.filename
         if config_data['split_mode'] == "pasal": 
-            pdf_content = extract.extract_pdf(pdf_file)
+            pdf_content = extract.extract_pdf(filepath)
         else:
-            pdf_content = extract.extract_pdf_per_page(pdf_file)
+            pdf_content = extract.extract_pdf_per_page(filepath)
 
-        result = {'config_data': config_data, 'pdf_filename': pdf_filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
+        result = {'config_data': config_data, 'pdf_filename': filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
 
         return result
 
@@ -61,8 +60,8 @@ def transform_files(data):
     except Exception as e:
         abort(400, str(e))
 
-def ETL_proccess(path, config_data, source_uri):
-    extracted_source = extract_files(path, config_data)
+def ETL_proccess(path, filename, config_data, source_uri):
+    extracted_source = extract_files(path, filename, config_data)
     source_title, transformed_source = transform_files(extracted_source)
 
     source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
@@ -83,8 +82,8 @@ def post_source():
         config_data = json.load(request.files['config'])
 
         for pdf_file in request.files.getlist('pdf_file'):
-            source_uri, path = upload_file(pdf_file)
-            thread = threading.Thread(target=ETL_proccess, args=(path, config_data, source_uri))
+            source_uri, path, filename = upload_file(pdf_file)
+            thread = threading.Thread(target=ETL_proccess, args=(path, filename, config_data, source_uri))
             thread.start()    
 
         return jsonify({'message': "Successfully Load File and its Embedding to Database"})
