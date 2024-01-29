@@ -5,6 +5,7 @@ from controller import extract, transform, embedding
 import model
 import os
 import logging
+import threading
 
 app = Flask(__name__)
 load_dotenv()
@@ -16,8 +17,10 @@ def upload_file(pdf_file):
     try:
         if pdf_file:
             # Save the file to the specified folder
-            pdf_file.save(os.path.join('files', pdf_file.filename))
-            return 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
+            path = os.path.join('files', pdf_file.filename)
+            pdf_file.save(path)
+            url = 'http://' + os.getenv('DB_HOST') + ':' + os.getenv('APP_PORT') + '/files/' + pdf_file.filename
+            return url, path, pdf_file.filename
     except Exception as e:
         abort(400, str(e))
 
@@ -32,16 +35,15 @@ def delete_file(filename):
     except Exception as e:
         abort(400, str(e))
 
-def extract_files(pdf_file, config_data):
+def extract_files(filepath, filename, config_data):
     try:
         # Access the PDF file
-        pdf_filename = pdf_file.filename
         if config_data['split_mode'] == "pasal": 
-            pdf_content = extract.extract_pdf(pdf_file)
+            pdf_content = extract.extract_pdf(filepath)
         else:
-            pdf_content = extract.extract_pdf_per_page(pdf_file)
+            pdf_content = extract.extract_pdf_per_page(filepath)
 
-        result = {'config_data': config_data, 'pdf_filename': pdf_filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
+        result = {'config_data': config_data, 'pdf_filename': filename, 'pdf_content': pdf_content, 'message': 'Successfully processed JSON and PDF files'}
 
         return result
 
@@ -58,30 +60,43 @@ def transform_files(data):
     except Exception as e:
         abort(400, str(e))
 
+def ETL_proccess(path, filename, config_data, source_uri):
+    extracted_source = extract_files(path, filename, config_data)
+    source_title, transformed_source = transform_files(extracted_source)
+
+    source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
+
+    for index, content in enumerate(transformed_source):
+        model.insert_chunk_data(source_id, content)
+    
+    header = extracted_source['config_data']['split_mode'] == 'pasal'
+    return source_id, header
+
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
         if 'pdf_file' not in request.files:
             return jsonify({'error': 'No PDF file part'})
         
-        # Access the JSON file
+        # Access the JSON config file
         config_data = json.load(request.files['config'])
 
+        sources = []
+
+        # save file and ETL
         for pdf_file in request.files.getlist('pdf_file'):
-            source_uri = upload_file(pdf_file)
-            extracted_source = extract_files(pdf_file, config_data)
-            source_title, transformed_source = transform_files(extracted_source)
-            print(pdf_file, source_title, source_uri)
+            source_uri, path, filename = upload_file(pdf_file)
+            source_id, header = ETL_proccess(path, filename, config_data, source_uri)
+            sources.append((source_id, header))
 
-            source_id = model.insert_source_metadata(source_uri, extracted_source['pdf_filename'], source_title)
+        # embedding proccess
+        for source_id, header in sources:
+            embedding.threaded_create_embeddings(source_id, header=header)  
 
-            for index, content in enumerate(transformed_source):
-                model.insert_chunk_data(source_id, content)
-    
-            header = extracted_source['config_data']['split_mode'] == 'pasal'
-            embedding.threaded_create_embeddings(source_id, header=header)
-
-        return jsonify({'message': "Successfully Load File and its Embedding to Database"})
+        return jsonify({
+            'message': "Successfully Load File to Database and start Embedding Proccess", 
+            'source_id': [source_id for source_id, _ in sources]
+        })
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400
