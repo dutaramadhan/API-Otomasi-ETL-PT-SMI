@@ -13,11 +13,11 @@ def extract_pdf(filepath):
       textpdf += page.extract_text()
   """
   doc = fitz.open(filepath)
-
+  textpdf = ''
   for page_num in range(doc.page_count):
     page = doc[page_num]
     textpdf += page.get_text()
-    
+
   return textpdf
 
 def extract_pdf_per_page(filepath):
