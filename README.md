@@ -272,7 +272,10 @@ http://10.10.6.69:5001
   ```
 - ##### Response
   ```
-  { "message": "Successfully Load File and its Embedding to Database" }
+  {
+     'message': "Successfully Load File to Database and start Embedding Proccess", 
+     'source_id': [ int ]
+  }
   ```
 
 ### 2. Get Source Metadata
