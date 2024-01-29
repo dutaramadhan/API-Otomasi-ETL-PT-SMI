@@ -50,7 +50,6 @@ def create_embeddings(source_id, header=False):
 
         model.store_embedding(int(id), embedding_vector, int(token), header_embedding_vector)
 
-        print(id, token)
         time.sleep(60/500)
     return True
 

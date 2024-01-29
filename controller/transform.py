@@ -51,7 +51,7 @@ def textSplit(textpdf, split_patterns, resplit_patterns):
   header = ['']
   
   results, header = recursive_split(split_patterns, results, header)
-  print(results)
+
   # split by chunk size
   text_splitter = NLTKTextSplitter(chunk_size=2000)
   for k in range(len(results)):
