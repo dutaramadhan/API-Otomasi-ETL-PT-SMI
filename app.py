@@ -70,7 +70,7 @@ def ETL_proccess(path, filename, config_data, source_uri):
         model.insert_chunk_data(source_id, content)
     
     header = extracted_source['config_data']['split_mode'] == 'pasal'
-    embedding.threaded_create_embeddings(source_id, header=header)
+    return source_id, header
 
 @app.route('/smi/source', methods=['POST'])
 def post_source():
@@ -78,15 +78,25 @@ def post_source():
         if 'pdf_file' not in request.files:
             return jsonify({'error': 'No PDF file part'})
         
-        # Access the JSON file
+        # Access the JSON config file
         config_data = json.load(request.files['config'])
 
+        sources = []
+
+        # save file and ETL
         for pdf_file in request.files.getlist('pdf_file'):
             source_uri, path, filename = upload_file(pdf_file)
-            thread = threading.Thread(target=ETL_proccess, args=(path, filename, config_data, source_uri))
-            thread.start()    
+            source_id, header = ETL_proccess(path, filename, config_data, source_uri)
+            sources.append((source_id, header))
 
-        return jsonify({'message': "Successfully Load File and its Embedding to Database"})
+        # embedding proccess
+        for source_id, header in sources:
+            embedding.threaded_create_embeddings(source_id, header=header)  
+
+        return jsonify({
+            'message': "Successfully Load File to Database and start Embedding Proccess", 
+            'source_id': [source_id for source_id, _ in sources]
+        })
     except Exception as e:
         error_message = {'error': str(e)}
         return jsonify(error_message), 400

@@ -1,17 +1,6 @@
-import PyPDF2
 import fitz
 
 def extract_pdf(filepath):
-  """
-  with open(filepath, 'rb') as file:
-    pdf_reader = PyPDF2.PdfReader(file)
-
-    textpdf = ''
-
-    for i in range(len(pdf_reader.pages)):
-      page = pdf_reader.pages[i]
-      textpdf += page.extract_text()
-  """
   doc = fitz.open(filepath)
   textpdf = ''
   for page_num in range(doc.page_count):
@@ -21,9 +10,8 @@ def extract_pdf(filepath):
   return textpdf
 
 def extract_pdf_per_page(filepath):
-  with open(filepath, 'rb') as file:
-    pdfReader = PyPDF2.PdfReader(filepath)
+  doc = fitz.open(filepath)
 
-    textPDF = [page.extract_text() for page in pdfReader.pages]
+  textPDF = [doc[page_num].extract_text() for page_num in range(doc.page_count)]
 
   return textPDF
