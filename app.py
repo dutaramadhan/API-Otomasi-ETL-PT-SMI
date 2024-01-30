@@ -75,8 +75,8 @@ def ETL_proccess(path, filename, config_data, source_uri):
 @app.route('/smi/source', methods=['POST'])
 def post_source():
     try:
-        if 'pdf_file' not in request.files:
-            return jsonify({'error': 'No PDF file part'})
+        if 'pdf_file' not in request.files or 'config' not in request.files:
+            return jsonify({'error': 'No PDF or config file part'}), 400
         
         # Access the JSON config file
         config_data = json.load(request.files['config'])
