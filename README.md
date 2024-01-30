@@ -18,7 +18,9 @@
 
    g. [Serve File](#serve)
 
-   h. [Get Metadata](#get-metadata) 
+   h. [Get Metadata](#get-metadata)
+
+   i. [Get Data](#get-data)
 4. [System's Flow](#systems-flow)
 5. [Tech Stack](#tech-stack)
 6. [How to Set Up](#set-up)
@@ -66,6 +68,7 @@ Fitur yang memungkinkan pengguna untuk mengakses file yang telah diunggah dengan
 <a name="get-metadata"></a>
 ### h. Get Metadata
 Fitur yang memberikan informasi metadata terkait file yang telah diunggah, seperti id file, nama file, judul file, tanggal unggah, dan url tempat file disimpan. Metadata ini dapat memberikan gambaran singkat kepada pengguna mengenai file yang telah berhasil diunggah ke dalam sistem.
+<a name="get-data"></a>
 ### i. Get Data
 Fitur yang memberikan informasi terkait data dari file yang telah diunggah, seperti jumlah split data dari file, jumlah data yang berhasil di-embedding, konten dari setiap data, jumlah karakter dari konten, berapa persen data yang telah berhasil di-embedding, nama file, judul file, dan URI tempat file disimpan.
 
