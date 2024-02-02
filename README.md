@@ -38,7 +38,7 @@
 
 <a name="api-info"></a>
 ## Information About this API
-API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding sumber data untuk data knowledge base. Pengguna dapat memasukan input berupa file peraturan dengan ekstensi PDF yang memiliki format berupa teks dan juga file config dalam format JSON untuk menentukan split mode, pattern untuk penghapusan pola yang tidak diperlukan, serta pattern pemecahan atau splitting untuk memperoleh judul dari peraturan yang dimasukan. Dengan menggunakan API ini pengguna dapat melakukan input dan embedding ke database dengan lebih cepat dan efisien dengan menyembunyikan proses yang terjadi di belakangnya.  
+API ini berfungsi untuk melakukan otomatisasi proses penginputan dan embedding sumber data untuk data knowledge base. Pengguna dapat memasukan input berupa file peraturan dengan ekstensi PDF yang memiliki format berupa teks dan juga file config dalam format JSON untuk menentukan split mode, pattern untuk penghapusan pola yang tidak diperlukan, split pattern untuk memecah konten secara rekursif, resplit pattern untuk memecah ulang potongan konten yang perlu dipisahkan, serta pattern pemecahan atau splitting untuk memperoleh judul dari peraturan yang dimasukan. Dengan menggunakan API ini pengguna dapat melakukan input dan embedding ke database dengan lebih cepat dan efisien dengan menyembunyikan proses yang terjadi di belakangnya.  
 
 <a name="main-feature"></a>
 ## Main Features
